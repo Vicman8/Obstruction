@@ -16,7 +16,7 @@ public class PlayerWalk : MonoBehaviour
     public float maxLookAngle = 60f;
 
     private CharacterController controller;
-    private Animator animator;
+    //private Animator animator;
 
     private Vector3 velocity;
     private float xRotation = 0f;
@@ -34,7 +34,7 @@ public class PlayerWalk : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
-        animator = GetComponentInChildren<Animator>();
+        //animator = GetComponentInChildren<Animator>();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -42,7 +42,7 @@ public class PlayerWalk : MonoBehaviour
     {
         HandleMouseLook();
         HandleJumpInput();
-        UpdateAnimator();
+        //UpdateAnimator();
         HandleButtonInput(); // 👈 handle left-click disabling
     }
 
@@ -83,7 +83,7 @@ public class PlayerWalk : MonoBehaviour
         if (canJump && controller.isGrounded && Input.GetButtonDown("Jump"))
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            animator.SetTrigger("JumpStart");
+            //animator.SetTrigger("JumpStart");
         }
     }
 
@@ -91,14 +91,14 @@ public class PlayerWalk : MonoBehaviour
     {
         if (!canLook)
         {
-            xRotation = 0f;
-            cameraTransform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-            transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y, 0f);
+            //xRotation = 0f;
+            //cameraTransform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+            //transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y, 0f);
             return;
         }
 
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity; //* Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity; //* Time.deltaTime;
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, minLookAngle, maxLookAngle);
@@ -126,17 +126,6 @@ public class PlayerWalk : MonoBehaviour
                 // Example: interact with buttons, doors, etc.
             }
         }
-    }
-
-    void UpdateAnimator()
-    {
-        if (animator == null) return;
-
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-
-        float moveAmount = new Vector2(x, z).magnitude;
-        animator.SetFloat("Speed", moveAmount, 0.1f, Time.deltaTime);
     }
 
     public void DisableSprint() => canSprint = false;

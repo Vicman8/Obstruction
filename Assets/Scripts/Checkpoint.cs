@@ -2,6 +2,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Checkpoint : MonoBehaviour
 {
@@ -29,6 +30,9 @@ public class Checkpoint : MonoBehaviour
     public float fadeDuration = 3f;
     public float batteryEmptyDuration = 4f;  // how long the dot loop runs
     public float batteryEmptySpeed = 0.5f;   // speed of dot animation
+
+    [Header("Restart Settings")]
+    public Button restartButton;
 
     private bool activated = false;
 
@@ -128,6 +132,12 @@ public class Checkpoint : MonoBehaviour
         // Show hint
         hintTextUI.text = hintMessage;
         hintTextUI.gameObject.SetActive(true);
+
+        float hintDisplayDuration = 3f; // adjust how long the hint stays visible
+        yield return new WaitForSeconds(hintDisplayDuration);
+
+        // Hide hint
+        hintTextUI.gameObject.SetActive(false);
     }
 
     private IEnumerator FinalShutdownSequence()
@@ -139,6 +149,9 @@ public class Checkpoint : MonoBehaviour
         int index = 0;
 
         // Step 1: loop battery empty text
+        if (statusTextUI != null)
+            statusTextUI.color = Color.yellow; // make "Battery empty" yellow
+
         while (elapsed < batteryEmptyDuration)
         {
             if (statusTextUI != null)
@@ -155,6 +168,7 @@ public class Checkpoint : MonoBehaviour
         // Step 2: Shutting down message
         if (statusTextUI != null)
         {
+            statusTextUI.color = Color.red; // change text color to red
             statusTextUI.text = "Shutting down";
         }
 
@@ -175,6 +189,17 @@ public class Checkpoint : MonoBehaviour
             }
         }
 
-        Debug.Log("Final checkpoint complete → Player shut down.");
+        if (restartButton != null)
+        {
+            restartButton.gameObject.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
 }
