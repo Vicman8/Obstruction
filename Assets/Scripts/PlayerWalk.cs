@@ -40,7 +40,7 @@ public class PlayerWalk : MonoBehaviour
 
     void Update()
     {
-        HandleMouseLook();
+        //HandleMouseLook();
         HandleJumpInput();
         //UpdateAnimator();
         HandleButtonInput(); // 👈 handle left-click disabling
@@ -49,6 +49,7 @@ public class PlayerWalk : MonoBehaviour
     void FixedUpdate()
     {
         HandleMovement();
+        HandleMouseLook();
     }
 
     void HandleMovement()
@@ -92,13 +93,13 @@ public class PlayerWalk : MonoBehaviour
         if (!canLook)
         {
             //xRotation = 0f;
-            //cameraTransform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+            cameraTransform.localRotation = Quaternion.Euler(0f, 0f, 0f);
             //transform.rotation = Quaternion.Euler(0f, transform.rotation.eulerAngles.y, 0f);
             return;
         }
 
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity; //* Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity; //* Time.deltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, minLookAngle, maxLookAngle);
